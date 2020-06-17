@@ -1,7 +1,7 @@
-%@author: 
+%@author:
 %    Tania lizbeth Oria trejo 14590555
 %    Efrain Garcia Garcia     15590287
-% Desarrollo una gramatica bnf (como la del video) para validar una 
+% Desarrollo una gramatica bnf (como la del video) para validar una
 % direccion ipv4 asi como una mascara de red.
 % https://es.wikipedia.org/wiki/M%C3%A1scara_de_red#Tabla_de_m%C3%A1scaras_de_red
 % Realice la implementacion de dicha gramatica en prolog donde
@@ -16,17 +16,17 @@
 %maskR("255.255.255.1").
 %false.
 
-atom_lstring([], []).
-atom_lstring([L|C],R) :- atom_lstring(C,S), atom_string(L,SF), append([SF],S,R).
-p_string(Term, LS) :-
+latom_lstring([], []).
+latom_lstring([F|C],R) :- latom_lstring(C,S), atom_string(F,SF), append([SF],S,R).
+preparar_string(Term, LS) :-
 		atom(Term),
 		atom_string(Term,Str),
-		p_string(Str,LS).
+		preparar_string(Str,LS).
 
-p_string(Str,LS) :-
+preparar_string(Str,LS) :-
 		string(Str),
 		string_chars(Str,LAC),
-		atom_lstring(LAC, LS).
+		latom_lstring(LAC, LS).
 
 
 mask(N) :-
@@ -36,30 +36,30 @@ mask(N) :-
 
 mask1(N) :-    N == "0".
 
-dig_ip(N) :-
+digito_ip(N) :-
 		N == "0"; N == "1"; N == "2";
 		N == "3"; N == "4"; N == "5";
 		N == "6"; N == "7"; N == "8"; N == "9".
 
-s_mask([L|[]]) :- mask1(L).
-s_mask([L|C]) :- mask1(L), s_mask(C).
+separa_mask([F|[]]) :- mask1(F).
+separa_mask([F|C]) :- mask1(F), separa_mask(C).
 
-s_mask([L|[]]) :-
-		mask(L);
-		 mask1(L).
+separar_mask([F|[]]) :-
+		mask(F);
+		 mask1(F).
 
 
-s_mask([L|C]) :-
-		 mask(L), s_mask(C);
-		 mask1(L), s_mask(C).
-		
+separar_mask([F|C]) :-
+		 mask(F), separar_mask(C);
+		 mask1(F), separa_mask(C).
 
-dirIp([B|[]]) :- dig_ip(B).
-dirIp([B|C]) :- dig_ip(B),dirIp(C).
 
-div_ip([L|[]]) :-  number_codes(N, L), N < 256, p_string(L,LS), dirIp(LS).
+dirIp([B|[]]) :- digito_ip(B).
+dirIp([B|C]) :- digito_ip(B),dirIp(C).
 
-div_ip([L|A]) :- number_codes(N, L), N < 256, p_string(L,LS),dirIp(LS), div_ip(A).
+dividir_ip([F|[]]) :-  number_codes(N, F), N < 256, preparar_string(F,LS), dirIp(LS).
 
-ip(IP) :- split_string(IP, ".", ".", D), div_ip(D).
-maskR(M) :- split_string(M, ".", ",", Z), s_mask(Z).
+dividir_ip([F|A]) :- number_codes(N, F), N < 256, preparar_string(F,LS),dirIp(LS), dividir_ip(A).
+
+ip(IP) :- split_string(IP, ".", ".", D), dividir_ip(D).
+maskR(M) :- split_string(M, ".", ",", L), separar_mask(L).
