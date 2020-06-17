@@ -7,14 +7,14 @@
 % Realice la implementacion de dicha gramatica en prolog donde
 % se pueda validar la cadena donde esta esa ip o mascara ejemplo
 
-ip("192.168.1.1").
-true.
-ip("256.168.1.1").
-false.
-maskR("255.255.255.0").
-true.
-maskR("255.255.255.1").
-false.
+%ip("192.168.1.1").
+%true.
+%ip("256.168.1.1").
+%false.
+%maskR("255.255.255.0").
+%true.
+%maskR("255.255.255.1").
+%false.
 
 atom_lstring([], []).
 atom_lstring([L|C],R) :- atom_lstring(C,S), atom_string(L,SF), append([SF],S,R).
@@ -36,7 +36,7 @@ mask(N) :-
 
 mask1(N) :-    N == "0".
 
-digito_ip(N) :-
+dig_ip(N) :-
 		N == "0"; N == "1"; N == "2";
 		N == "3"; N == "4"; N == "5";
 		N == "6"; N == "7"; N == "8"; N == "9".
@@ -57,9 +57,9 @@ s_mask([L|C]) :-
 dirIp([B|[]]) :- dig_ip(B).
 dirIp([B|C]) :- dig_ip(B),dirIp(C).
 
-div_ip([L|[]]) :-  num_cod(N, L), N < 256, p_string(L,LS), dirIp(LS).
+div_ip([L|[]]) :-  number_codes(N, L), N < 256, p_string(L,LS), dirIp(LS).
 
-div_ip([L|A]) :- num_cod(N, L), N < 256, p_string(L,LS),dirIp(LS), div_ip(A).
+div_ip([L|A]) :- number_codes(N, L), N < 256, p_string(L,LS),dirIp(LS), div_ip(A).
 
 ip(IP) :- split_string(IP, ".", ".", D), div_ip(D).
 maskR(M) :- split_string(M, ".", ",", Z), s_mask(Z).
